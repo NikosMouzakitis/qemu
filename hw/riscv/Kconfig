@@ -8,6 +8,14 @@ config IBEX
     bool
 
 # RISC-V machines in alphabetical order
+config C906_BOARD
+    bool
+    select RISCV_VIRT
+    select SIFIVE_PLIC
+    select RISCV_ACLINT
+    select SERIAL
+    select RISCV_NUMA
+    default y
 
 config MICROCHIP_PFSOC
     bool

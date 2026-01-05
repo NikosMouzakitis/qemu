@@ -41,7 +41,6 @@ riscv_system_ss.add(files(
   'time_helper.c',
   'riscv-qmp-cmds.c',
 ))
-
 subdir('tcg')
 subdir('kvm')
 
