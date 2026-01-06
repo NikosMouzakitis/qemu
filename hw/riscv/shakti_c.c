@@ -28,6 +28,7 @@
 #include "system/address-spaces.h"
 #include "hw/riscv/boot.h"
 
+//done
 static const struct MemmapEntry {
     hwaddr base;
     hwaddr size;
@@ -40,7 +41,7 @@ static const struct MemmapEntry {
     [SHAKTI_C_CLINT] =  {  0x02000000,  0xc0000  },
     [SHAKTI_C_I2C]   =  {  0x20c00000,  0x00100  },
 };
-
+//done
 static void shakti_c_machine_state_init(MachineState *mstate)
 {
     ShaktiCMachineState *sms = RISCV_SHAKTI_MACHINE(mstate);
@@ -66,11 +67,11 @@ static void shakti_c_machine_state_init(MachineState *mstate)
                               shakti_c_memmap[SHAKTI_C_ROM].base,
                               shakti_c_memmap[SHAKTI_C_ROM].size, 0, 0);
 }
-
+//done
 static void shakti_c_machine_instance_init(Object *obj)
 {
 }
-
+//done
 static void shakti_c_machine_class_init(ObjectClass *klass, const void *data)
 {
     MachineClass *mc = MACHINE_CLASS(klass);
@@ -86,6 +87,7 @@ static void shakti_c_machine_class_init(ObjectClass *klass, const void *data)
     mc->default_ram_id = "riscv.shakti.c.ram";
 }
 
+//done
 static const TypeInfo shakti_c_machine_type_info = {
     .name = TYPE_RISCV_SHAKTI_MACHINE,
     .parent = TYPE_MACHINE,
@@ -93,13 +95,14 @@ static const TypeInfo shakti_c_machine_type_info = {
     .instance_init = shakti_c_machine_instance_init,
     .instance_size = sizeof(ShaktiCMachineState),
 };
-
+//done
 static void shakti_c_machine_type_info_register(void)
 {
     type_register_static(&shakti_c_machine_type_info);
 }
 type_init(shakti_c_machine_type_info_register)
 
+//done
 static void shakti_c_soc_state_realize(DeviceState *dev, Error **errp)
 {
     MachineState *ms = MACHINE(qdev_get_machine());
@@ -142,6 +145,7 @@ static void shakti_c_soc_state_realize(DeviceState *dev, Error **errp)
         shakti_c_memmap[SHAKTI_C_ROM].base, &sss->rom);
 }
 
+//done
 static void shakti_c_soc_class_init(ObjectClass *klass, const void *data)
 {
     DeviceClass *dc = DEVICE_CLASS(klass);
@@ -154,7 +158,7 @@ static void shakti_c_soc_class_init(ObjectClass *klass, const void *data)
      */
     dc->user_creatable = false;
 }
-
+//done
 static void shakti_c_soc_instance_init(Object *obj)
 {
     ShaktiCSoCState *sss = RISCV_SHAKTI_SOC(obj);
@@ -172,7 +176,7 @@ static void shakti_c_soc_instance_init(Object *obj)
     object_property_set_int(OBJECT(&sss->cpus), "num-harts", 1,
                             &error_abort);
 }
-
+//done
 static const TypeInfo shakti_c_type_info = {
     .name = TYPE_RISCV_SHAKTI_SOC,
     .parent = TYPE_DEVICE,
@@ -180,9 +184,10 @@ static const TypeInfo shakti_c_type_info = {
     .instance_init = shakti_c_soc_instance_init,
     .instance_size = sizeof(ShaktiCSoCState),
 };
-
+//done
 static void shakti_c_type_info_register(void)
 {
     type_register_static(&shakti_c_type_info);
 }
+//done
 type_init(shakti_c_type_info_register)
