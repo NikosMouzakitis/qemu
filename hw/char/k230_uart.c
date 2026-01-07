@@ -2,6 +2,7 @@
 #include "hw/char/k230_uart.h"
 #include "hw/core/qdev-properties.h"
 #include "hw/core/qdev-properties-system.h"
+#include "hw/core/irq.h"
 #include "qemu/log.h"
 
 static uint64_t k230_uart_read(void *opaque, hwaddr addr, unsigned size)
@@ -94,7 +95,7 @@ static void k230_uart_reset(DeviceState *dev)
     s->uart_status = 0x0000;
     s->uart_delay = 0x0000;
     s->uart_control = K230_UART_CONTROL_DEFAULT;
-    s->uart_interrupt = 0x0000;
+    s->uart_interrupt = 16; //k230.dtsi
     s->uart_iq_cycles = 0x00;
     s->uart_rx_threshold = 0x00;
 }
@@ -106,13 +107,25 @@ static int k230_uart_can_receive(void *opaque)
     return !(s->uart_status & K230_UART_STATUS_RX_NOT_EMPTY);
 }
 
+static void k230_uart_raise_irq(K230UartState *s)
+{
+    if (s->uart_status & K230_UART_STATUS_RX_NOT_EMPTY) {
+        qemu_set_irq(s->irq, 1);
+    } else {
+        qemu_set_irq(s->irq, 0);
+    }
+}
+
 static void k230_uart_receive(void *opaque, const uint8_t *buf, int size)
 {
     K230UartState *s = opaque;
 
     s->uart_rx = *buf;
     s->uart_status |= K230_UART_STATUS_RX_NOT_EMPTY;
+    /* raise IRQ line */
+    k230_uart_raise_irq(s);
 }
+
 
 static void k230_uart_realize(DeviceState *dev, Error **errp)
 {

@@ -43,7 +43,7 @@ typedef struct {
     uint32_t uart_interrupt;
     uint32_t uart_iq_cycles;
     uint32_t uart_rx_threshold;
-
+    qemu_irq irq; 
     CharFrontend chr;
 } K230UartState;
 

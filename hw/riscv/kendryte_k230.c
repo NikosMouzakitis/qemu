@@ -16,6 +16,7 @@
 #include "hw/intc/sifive_plic.h"
 #include "hw/intc/riscv_aclint.h"
 #include "system/system.h"
+#include "hw/core/irq.h"
 #include "hw/core/qdev-properties.h"
 #include "system/address-spaces.h"
 #include "hw/riscv/kendryte_k230.h"
@@ -27,7 +28,7 @@ static const struct MemmapEntry {
 } k230_memmap[] = {
     [K230_ROM]   =  {  0x00001000,  0x2000   },
     [K230_RAM]   =  {  0x80000000,  0x0      },
-    [K230_UART]  =  {  0x00011300,  0x00040  },
+    [K230_UART]  =  {  0x91400000,  0x01000  }, //uart0 for K230.
     [K230_GPIO]  =  {  0x020d0000,  0x00100  },
     [K230_PLIC]  =  {  0x0c000000,  0x20000  },
     [K230_CLINT] =  {  0x02000000,  0xc0000  },
@@ -127,17 +128,22 @@ static void k230_soc_state_realize(DeviceState *dev, Error **errp)
         RISCV_ACLINT_DEFAULT_MTIMER_SIZE, 0, 1,
         RISCV_ACLINT_DEFAULT_MTIMECMP, RISCV_ACLINT_DEFAULT_MTIME,
         RISCV_ACLINT_DEFAULT_TIMEBASE_FREQ, false);
-
+    printf("setting qdev prop for uart\n");
     qdev_prop_set_chr(DEVICE(&(sss->uart)), "chardev", serial_hd(0));
     if (!sysbus_realize(SYS_BUS_DEVICE(&sss->uart), errp)) {
         return;
     }
-    sysbus_mmio_map(SYS_BUS_DEVICE(&sss->uart), 0,
-                    k230_memmap[K230_UART].base);
+    printf("allocating irq\n");
+    //allocate and connect irq to plic.
+    sss->uart.irq = qemu_allocate_irq(NULL, NULL, 16);
 
+    printf("calling sysbus mmio map\n");
+    sysbus_mmio_map(SYS_BUS_DEVICE(&sss->uart), 0, k230_memmap[K230_UART].base);
+    printf("calling memory_region_init rom\n"); 
     /* ROM */
     memory_region_init_rom(&sss->rom, OBJECT(dev), "riscv.k230.rom",
                            k230_memmap[K230_ROM].size, &error_fatal);
+    printf("calling memory_region add subregion for rom\n"); 
     memory_region_add_subregion(system_memory,
         k230_memmap[K230_ROM].base, &sss->rom);
 

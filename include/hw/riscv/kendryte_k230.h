@@ -17,6 +17,7 @@ typedef struct K230SoCState {
     RISCVHartArrayState cpus;
     DeviceState *plic;
     K230UartState uart;
+		       
     MemoryRegion rom;
 
 } K230SoCState;
