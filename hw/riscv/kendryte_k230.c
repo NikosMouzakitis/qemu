@@ -67,13 +67,17 @@ static void k230_machine_class_init(ObjectClass *klass, const void *data)
 {
     MachineClass *mc = MACHINE_CLASS(klass);
     static const char * const valid_cpu_types[] = {
-        RISCV_CPU_TYPE_NAME("k230"),
+       // RISCV_CPU_TYPE_NAME("k-230"),
+        RISCV_CPU_TYPE_NAME("thead-c906"),
         NULL
     };
 
-    mc->desc = "K2300-kendryte test";
+    mc->desc = "K2300 Kendryte test";
     mc->init = k230_machine_state_init;
-    mc->default_cpu_type = TYPE_RISCV_CPU_K230;
+
+    //k230 uses C908
+    mc->default_cpu_type = RISCV_CPU_TYPE_NAME("thead-c906");
+    //mc->default_cpu_type = TYPE_RISCV_CPU_K230;
     mc->valid_cpu_types = valid_cpu_types;
     mc->default_ram_id = "riscv.k230.ram";
 }
@@ -160,7 +164,8 @@ static void k230_soc_instance_init(Object *obj)
      * instead of TYPE_RISCV_CPU_K230
      */
     object_property_set_str(OBJECT(&sss->cpus), "cpu-type",
-                            TYPE_RISCV_CPU_K230, &error_abort);
+                            RISCV_CPU_TYPE_NAME("thead-c906"), &error_abort);
+                            //TYPE_RISCV_CPU_K230, &error_abort);
     object_property_set_int(OBJECT(&sss->cpus), "num-harts", 1,
                             &error_abort);
 

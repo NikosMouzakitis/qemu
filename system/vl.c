@@ -844,8 +844,8 @@ static MachineClass *find_machine(const char *name, GSList *machines)
 
     for (el = machines; el; el = el->next) {
         MachineClass *mc = el->data;
-	printf("comparing %s | %s | %s \n",mc->name, name, mc->alias);
-        if (!strcmp(mc->name, name) || !g_strcmp0(mc->alias, name)) {
+        
+	if (!strcmp(mc->name, name) || !g_strcmp0(mc->alias, name)) {
             return mc;
         }
     }
